@@ -241,7 +241,8 @@
                     'Access factory / Program language issue',
                     'IFOUND',
                     'In Progress',
-                    '50%'
+                    '50%',
+                    'Wasan'
                 )">
 
                     View
@@ -428,7 +429,8 @@
             'Abnormal waveform / Waiting Vega card',
             'CHIN POON',
             'Completed',
-            '100%'
+            '100%',
+            'wasan'
         )">
 
             View
@@ -510,7 +512,7 @@
 
     <script>
 
-        function openModal(task, factory, status, progress) {
+        function openModal(task, factory, status, progress, owner) {
 
             document.getElementById("popup")
                 .style.display = "block";
@@ -524,7 +526,9 @@
 
                 "<b>Status:</b> " + status + "<br><br>" +
 
-                "<b>Progress:</b> " + progress;
+                "<b>Progress:</b> " + progress + "<br><br>" +
+
+                "<b>Responsible:</b> " + owner;
 
         }
 
