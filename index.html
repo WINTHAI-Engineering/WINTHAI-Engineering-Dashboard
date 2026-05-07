@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engineering Task Dashboard</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            padding: 25px;
+            background-color: #f4f7fb;
+            font-family: Arial, sans-serif;
+            color: #1f2937;
+        }
+
+        h1 {
+            margin-bottom: 25px;
+        }
+
+        .dashboard {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            flex: 1;
+            min-width: 220px;
+            padding: 25px;
+            border-radius: 18px;
+            background: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .card-number {
+            font-size: 42px;
+            font-weight: bold;
+        }
+
+        .blue {
+            background-color: #e8f1ff;
+        }
+
+        .green {
+            background-color: #e9f7e9;
+        }
+
+        .orange {
+            background-color: #fff1e6;
+        }
+
+        .purple {
+            background-color: #f2e8ff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        th {
+            background-color: #edf3fb;
+            padding: 15px;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .status-progress {
+            color: #c27c00;
+            font-weight: bold;
+        }
+
+        .status-review {
+            color: #6d28d9;
+            font-weight: bold;
+        }
+
+        .status-complete {
+            color: #15803d;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 120px;
+            height: 14px;
+            background-color: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #5b9cff;
+        }
+
+        button {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #1d4ed8;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: white;
+            width: 400px;
+            margin: 120px auto;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .close {
+            float: right;
+            font-size: 25px;
+            cursor: pointer;
+        }
+
+        .detail {
+            margin-top: 15px;
+            line-height: 1.8;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>📊 Engineering Task Dashboard</h1>
+
+    <div class="dashboard">
+
+        <div class="card blue">
+            <div class="card-title">📋 ALL TASKS</div>
+            <div class="card-number">6</div>
+        </div>
+
+        <div class="card green">
+            <div class="card-title">✅ COMPLETED</div>
+            <div class="card-number">1</div>
+        </div>
+
+        <div class="card orange">
+            <div class="card-title">⏳ PENDING</div>
+            <div class="card-number">5</div>
+        </div>
+
+        <div class="card purple">
+            <div class="card-title">📈 PROGRESS</div>
+            <div class="card-number">63%</div>
+        </div>
+
+    </div>
+
+    <table>
+
+        <tr>
+            <th>No</th>
+            <th>Task</th>
+            <th>Factory</th>
+            <th>Status</th>
+            <th>Progress</th>
+            <th>Action</th>
+        </tr>
+
+        <tr>
+
+            <td>1</td>
+
+            <td>
+                Access factory / Program language issue
+            </td>
+
+            <td>IFOUND</td>
+
+            <td class="status-progress">
+                In Progress
+            </td>
+
+            <td>
+
+                <div class="progress-bar">
+
+                    <div class="progress-fill"
+                        style="width:50%;">
+                    </div>
+
+                </div>
+
+                <br>
+
+                50%
+
+            </td>
+
+            <td>
+
+                <button onclick="openModal(
+                    'Access factory / Program language issue',
+                    'IFOUND',
+                    'In Progress',
+                    '50%'
+                )">
+
+                    View
+
+                </button>
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td>2</td>
+
+            <td>
+                WHC / DQA Review
+            </td>
+
+            <td>Multex</td>
+
+            <td class="status-review">
+                Review
+            </td>
+
+            <td>
+
+                <div class="progress-bar">
+
+                    <div class="progress-fill"
+                        style="width:75%;">
+                    </div>
+
+                </div>
+
+                <br>
+
+                75%
+
+            </td>
+
+            <td>
+
+                <button onclick="openModal(
+                    'WHC / DQA Review',
+                    'Multex',
+                    'Review',
+                    '75%'
+                )">
+
+                    View
+
+                </button>
+
+            </td>
+
+        </tr>
+<tr>
+
+    <td>3</td>
+
+    <td>
+        FA version update / PCB transfer adjustment
+    </td>
+
+    <td>ETON</td>
+
+    <td class="status-review">
+        Review
+    </td>
+
+    <td>
+
+        <div class="progress-bar">
+
+            <div class="progress-fill"
+                style="width:75%;">
+            </div>
+
+        </div>
+
+        <br>
+
+        75%
+
+    </td>
+
+    <td>
+
+        <button onclick="openModal(
+            'FA version update / PCB transfer adjustment',
+            'ETON',
+            'Review',
+            '75%'
+        )">
+
+            View
+
+        </button>
+
+    </td>
+
+</tr>
+
+<tr>
+
+    <td>4</td>
+
+    <td>
+        WHC machine calibration
+    </td>
+
+    <td>GCE</td>
+
+    <td class="status-progress">
+        In Progress
+    </td>
+
+    <td>
+
+        <div class="progress-bar">
+
+            <div class="progress-fill"
+                style="width:50%;">
+            </div>
+
+        </div>
+
+        <br>
+
+        50%
+
+    </td>
+
+    <td>
+
+        <button onclick="openModal(
+            'WHC machine calibration',
+            'GCE',
+            'In Progress',
+            '50%'
+        )">
+
+            View
+
+        </button>
+
+    </td>
+
+</tr>
+
+<tr>
+
+    <td>5</td>
+
+    <td>
+        Abnormal waveform / Waiting Vega card
+    </td>
+
+    <td>CHIN POON</td>
+
+    <td class="status-complete">
+        Completed
+    </td>
+
+    <td>
+
+        <div class="progress-bar">
+
+            <div class="progress-fill"
+                style="width:100%;">
+            </div>
+
+        </div>
+
+        <br>
+
+        100%
+
+    </td>
+
+    <td>
+
+        <button onclick="openModal(
+            'Abnormal waveform / Waiting Vega card',
+            'CHIN POON',
+            'Completed',
+            '100%'
+        )">
+
+            View
+
+        </button>
+
+    </td>
+
+</tr>
+
+<tr>
+
+    <td>6</td>
+
+    <td>
+        ACQ Timeout / Waiting MIL card
+    </td>
+
+    <td>SYKC</td>
+
+    <td class="status-progress">
+        Planning
+    </td>
+
+    <td>
+
+        <div class="progress-bar">
+
+            <div class="progress-fill"
+                style="width:25%;">
+            </div>
+
+        </div>
+
+        <br>
+
+        25%
+
+    </td>
+
+    <td>
+
+        <button onclick="openModal(
+            'ACQ Timeout / Waiting MIL card',
+            'SYKC',
+            'Planning',
+            '25%'
+        )">
+
+            View
+
+        </button>
+
+    </td>
+
+</tr>
+    </table>
+
+    <div id="popup" class="modal">
+
+        <div class="modal-content">
+
+            <span class="close"
+                onclick="closeModal()">
+
+                &times;
+
+            </span>
+
+            <h2>Task Detail</h2>
+
+            <div class="detail" id="detailText">
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        function openModal(task, factory, status, progress) {
+
+            document.getElementById("popup")
+                .style.display = "block";
+
+            document.getElementById("detailText")
+                .innerHTML =
+
+                "<b>Task:</b> " + task + "<br><br>" +
+
+                "<b>Factory:</b> " + factory + "<br><br>" +
+
+                "<b>Status:</b> " + status + "<br><br>" +
+
+                "<b>Progress:</b> " + progress;
+
+        }
+
+        function closeModal() {
+
+            document.getElementById("popup")
+                .style.display = "none";
+
+        }
+
+    </script>
+
+</body>
+
+</html>
