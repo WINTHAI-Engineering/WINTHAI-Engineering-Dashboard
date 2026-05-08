@@ -538,14 +538,15 @@
 
         }
 
-        function closeModal() {
+         function closeModal() {
+    document.getElementById("popup")
+        .style.display = "none";
+}
 
-            document.getElementById("popup")
-                .style.display = "none";
-
-        }
-
-    </script>
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js");
+}
+</script>
 
 </body>
 
