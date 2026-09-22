@@ -496,7 +496,7 @@
         "ประเภท: " + data.action + "<br>" +
         "เวลา: " + data.dateTime + "<br>" +
         "พิกัด: " + latitude.toFixed(6) + ", " + longitude.toFixed(6) + "<br>" +
-        "ความแม่นยำ: " + data.accuracy + " เมตร";
+        "ความแม่นยำ: " + data.accuracy + " เมตร";       
 
          const formData = new URLSearchParams();
     formData.append("employeeId", data.employeeId);
@@ -506,7 +506,23 @@
     formData.append("longitude", data.longitude);
     formData.append("photoUrl", data.photoBase64 || "");
 
-    fetch("https://script.google.com/macros/s/AKfycby_53hBZAMK9ZHhTTsXCWELPZENU_WqU9yEekG5wyebzVUFN2CcjIfz8cxJbd70xOc/exec", {
+    fetch("    const targetUrl = "https://script.google.com/macros/s/AKfycby_53hBZAMK9ZHhTTsXCWELPZENU_WqU9yEekG5wyebzVUFN2CcjIfz8cxJbd70xOc/exec";
+    
+    // แปลงข้อมูลเป็น URL Parameters เพื่อให้ส่งผ่าน GET ได้อย่างไร้รอยต่อ
+    const params = new URLSearchParams({
+      employeeId: data.employeeId,
+      employeeName: data.employeeName,
+      action: data.action,
+      latitude: latitude,
+      longitude: longitude,
+      photoUrl: photoBase64 || ""
+    });
+
+    // ใช้ Image Beacon ส่งข้อมูลแบบเงียบๆ ทะลุทุกข้อจำกัด CORS
+    const img = new Image();
+    img.src = targetUrl + "?" + params.toString();
+
+    showStatus("บันทึกเวลาแบบทดสอบเรียบร้อยแล้ว ข้อมูลอยู่ใน Console", "success");", {
       method: "POST",
       body: formData
     });
