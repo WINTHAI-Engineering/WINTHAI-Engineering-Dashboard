@@ -498,6 +498,11 @@
         "พิกัด: " + latitude.toFixed(6) + ", " + longitude.toFixed(6) + "<br>" +
         "ความแม่นยำ: " + data.accuracy + " เมตร";
 
+            fetch("https://script.google.com/macros/s/AKfycbx5WKYvGJTycVBI1v5wbKMnOVoZayIX3LVyqLfGW--F5VPDc5GBFiDaGRp27AGS6nw/exec", {
+      method: "POST",
+      body: JSON.stringify(data)
+    });
+
       showStatus("บันทึกเวลาแบบทดสอบเรียบร้อยแล้ว ข้อมูลอยู่ใน Console", "success");
     });
 
