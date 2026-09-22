@@ -498,9 +498,17 @@
         "พิกัด: " + latitude.toFixed(6) + ", " + longitude.toFixed(6) + "<br>" +
         "ความแม่นยำ: " + data.accuracy + " เมตร";
 
-            fetch("https://script.google.com/macros/s/AKfycbx5WKYvGJTycVBI1v5wbKMnOVoZayIX3LVyqLfGW--F5VPDc5GBFiDaGRp27AGS6nw/exec", {
+         const formData = new URLSearchParams();
+    formData.append("employeeId", data.employeeId);
+    formData.append("employeeName", data.employeeName);
+    formData.append("action", data.action);
+    formData.append("latitude", data.latitude);
+    formData.append("longitude", data.longitude);
+    formData.append("photoUrl", data.photoBase64 || "");
+
+    fetch("https://script.google.com/macros/s/AKfycbwoQB2WcJmwPkYle6Cor7u7JWfVzDADwQRqb-th8HI82KZ1DItI-Y2x6ErSiO1DMls/exec", {
       method: "POST",
-      body: JSON.stringify(data)
+      body: formData
     });
 
       showStatus("บันทึกเวลาแบบทดสอบเรียบร้อยแล้ว ข้อมูลอยู่ใน Console", "success");
