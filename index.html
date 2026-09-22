@@ -1,553 +1,507 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Engineering Task Dashboard</title>
-    <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2563eb">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบลงเวลาเข้า-ออกงาน</title>
 
-    <style>
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        body {
-            margin: 0;
-            padding: 25px;
-            background-color: #f4f7fb;
-            font-family: Arial, sans-serif;
-            color: #1f2937;
-        }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+      background: linear-gradient(135deg, #eaf2ff, #f7f9fc);
+      color: #1d2939;
+      font-family: Arial, "Segoe UI", Tahoma, sans-serif;
+    }
 
-        h1 {
-            margin-bottom: 25px;
-        }
+    .container {
+      width: 100%;
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 26px;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(16, 24, 40, 0.12);
+    }
 
-        .dashboard {
-            display: flex;
-            gap: 25px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
+    h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 25px;
+      color: #155eef;
+    }
 
-        .card {
-            flex: 1;
-            min-width: 220px;
-            padding: 25px;
-            border-radius: 18px;
-            background: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-            text-align: center;
-        }
+    .subtitle {
+      margin: 10px 0 24px;
+      text-align: center;
+      color: #667085;
+      font-size: 14px;
+    }
 
-        .card-title {
-            font-size: 18px;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
+    .consent {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 14px;
+      border: 1px solid #fedf89;
+      border-radius: 12px;
+      background: #fffaeb;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #7a2e0e;
+    }
 
-        .card-number {
-            font-size: 42px;
-            font-weight: bold;
-        }
+    .consent input {
+      width: 19px;
+      height: 19px;
+      margin: 2px 0 0;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
 
-        .blue {
-            background-color: #e8f1ff;
-        }
+    label {
+      display: block;
+      margin: 18px 0 7px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #344054;
+    }
 
-        .green {
-            background-color: #e9f7e9;
-        }
+    input,
+    select,
+    button {
+      width: 100%;
+      min-height: 50px;
+      border-radius: 11px;
+      font-size: 16px;
+    }
 
-        .orange {
-            background-color: #fff1e6;
-        }
+    input,
+    select {
+      padding: 12px 14px;
+      border: 1px solid #d0d5dd;
+      outline: none;
+      background: #ffffff;
+      color: #1d2939;
+    }
 
-        .purple {
-            background-color: #f2e8ff;
-        }
+    input:focus,
+    select:focus {
+      border-color: #155eef;
+      box-shadow: 0 0 0 4px rgba(21, 94, 239, 0.12);
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-        }
+    input:disabled,
+    select:disabled {
+      background: #f2f4f7;
+      cursor: not-allowed;
+    }
 
-        th {
-            background-color: #edf3fb;
-            padding: 15px;
-            font-size: 15px;
-            text-align: left;
-        }
+    .step {
+      margin: 26px 0 9px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eaecf0;
+      font-size: 15px;
+      font-weight: 700;
+      color: #475467;
+    }
 
-        td {
-            padding: 15px;
-            border-top: 1px solid #e5e7eb;
-        }
+    button {
+      padding: 12px 16px;
+      border: none;
+      font-weight: 700;
+      color: #ffffff;
+      cursor: pointer;
+      transition: filter 0.2s, transform 0.1s;
+    }
 
-        tr:hover {
-            background-color: #f9fafb;
-        }
+    button:hover:not(:disabled) {
+      filter: brightness(0.96);
+    }
 
-        .status-progress {
-            color: #c27c00;
-            font-weight: bold;
-        }
+    button:active:not(:disabled) {
+      transform: scale(0.99);
+    }
 
-        .status-review {
-            color: #6d28d9;
-            font-weight: bold;
-        }
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
 
-        .status-complete {
-            color: #15803d;
-            font-weight: bold;
-        }
+    .blue {
+      background: #155eef;
+    }
 
-        .progress-bar {
-            width: 120px;
-            height: 14px;
-            background-color: #e5e7eb;
-            border-radius: 10px;
-            overflow: hidden;
-        }
+    .gray {
+      background: #475467;
+    }
 
-        .progress-fill {
-            height: 100%;
-            background-color: #5b9cff;
-        }
+    .green {
+      background: #039855;
+    }
 
-        button {
-            background-color: #2563eb;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-        }
+    .info,
+    .status {
+      margin-top: 11px;
+      padding: 13px;
+      border-radius: 11px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
 
-        button:hover {
-            background-color: #1d4ed8;
-        }
+    .info {
+      background: #eff8ff;
+      color: #175cd3;
+    }
 
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.4);
-        }
+    .status {
+      display: none;
+    }
 
-        .modal-content {
-            background-color: white;
-            width: 400px;
-            margin: 120px auto;
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
+    .status.success {
+      display: block;
+      background: #ecfdf3;
+      color: #027a48;
+    }
 
-        .close {
-            float: right;
-            font-size: 25px;
-            cursor: pointer;
-        }
+    .status.error {
+      display: block;
+      background: #fef3f2;
+      color: #b42318;
+    }
 
-        .detail {
-            margin-top: 15px;
-            line-height: 1.8;
-        }
+    .status.loading {
+      display: block;
+      background: #fffaeb;
+      color: #b54708;
+    }
 
-    </style>
+    #video,
+    #photo {
+      display: none;
+      width: 100%;
+      margin-top: 12px;
+      border-radius: 12px;
+      background: #101828;
+    }
 
+    .map-link {
+      display: none;
+      margin-top: 10px;
+      color: #155eef;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .map-link:hover {
+      text-decoration: underline;
+    }
+
+    .result {
+      display: none;
+      margin-top: 18px;
+      padding: 14px;
+      border: 1px solid #abefc6;
+      border-radius: 12px;
+      background: #f6fef9;
+      color: #027a48;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
+
+      .container {
+        padding: 18px;
+        border-radius: 16px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <main class="container">
+    <h1>ระบบลงเวลาเข้า-ออกงาน</h1>
+    <p class="subtitle">กรอกข้อมูล รับตำแหน่ง และถ่ายรูปก่อนบันทึกเวลา</p>
 
-    <h1>📊 Engineering Task Dashboard</h1>
-
-    <div class="dashboard">
-
-        <div class="card blue">
-            <div class="card-title">📋 ALL JOB</div>
-            <div class="card-number">6</div>
-        </div>
-
-        <div class="card green">
-            <div class="card-title">✅ COMPLETED</div>
-            <div class="card-number">2</div>
-        </div>
-
-        <div class="card orange">
-            <div class="card-title">⏳ PENDING</div>
-            <div class="card-number">4</div>
-        </div>
-
-        <div class="card purple">
-            <div class="card-title">📈 PROGRESS</div>
-            <div class="card-number">63%</div>
-        </div>
-
+    <div class="consent">
+      <input type="checkbox" id="consent">
+      <label for="consent" style="margin: 0; font-weight: normal; cursor: pointer;">
+        ฉันยินยอมให้ระบบเข้าถึงตำแหน่ง GPS และกล้อง เพื่อใช้ยืนยันการลงเวลาทำงาน
+      </label>
     </div>
 
-    <table>
+    <label for="employeeId">รหัสพนักงาน</label>
+    <input id="employeeId" type="text" placeholder="เช่น EMP001" disabled>
 
-        <tr>
-            <th>No</th>
-            <th>Task</th>
-            <th>Factory</th>
-            <th>Status</th>
-            <th>Progress</th>
-            <th>Action</th>
-        </tr>
+    <label for="employeeName">ชื่อ-นามสกุล</label>
+    <input id="employeeName" type="text" placeholder="กรอกชื่อ-นามสกุล" disabled>
 
-        <tr>
+    <label for="action">ประเภทการลงเวลา</label>
+    <select id="action" disabled>
+      <option value="เข้างาน">เข้างาน</option>
+      <option value="ออกงาน">ออกงาน</option>
+    </select>
 
-            <td>1</td>
+    <div class="step">ขั้นตอนที่ 1: ตรวจสอบตำแหน่ง GPS</div>
 
-            <td>
-                Access factory / Program language issue
-            </td>
+    <button id="locationButton" class="gray" disabled>
+      รับตำแหน่ง GPS
+    </button>
 
-            <td>IFOUND</td>
-
-            <td class="status-progress">
-                In Progress
-            </td>
-
-            <td>
-
-                <div class="progress-bar">
-
-                    <div class="progress-fill"
-                        style="width:50%;">
-                    </div>
-
-                </div>
-
-                <br>
-
-                25%
-
-            </td>
-
-            <td>
-
-                <button onclick="openModal(
-                    'Access factory / Program language issue',
-                    'IFOUND',
-                    'In Progress',
-                    '25%',
-                    'God,Pook'
-                )">
-
-                    View
-
-                </button>
-
-            </td>
-
-        </tr>
-
-        <tr>
-
-            <td>2</td>
-
-            <td>
-                Install Function MES / Follow up MES / WHC,DQA-650
-            </td>
-
-            <td>Multex</td>
-
-            <td class="status-review">
-                Review
-            </td>
-
-            <td>
-
-                <div class="progress-bar">
-
-                    <div class="progress-fill"
-                        style="width:75%;">
-                    </div>
-
-                </div>
-
-                <br>
-
-                75%
-
-            </td>
-
-            <td>
-
-                <button onclick="openModal(
-                    'WHC / DQA Review',
-                    'Multex',
-                    'Review',
-                    '75%',
-                    'Bia,Peter'
-                )">
-
-                    View
-
-                </button>
-
-            </td>
-
-        </tr>
-<tr>
-
-    <td>3</td>
-
-    <td>
-        PCB transfer NG-OK to Robot Arm  FA version Update
-    </td>
-
-    <td>ETON</td>
-
-    <td class="status-review">
-        Review
-    </td>
-
-    <td>
-
-        <div class="progress-bar">
-
-            <div class="progress-fill"
-                style="width:75%;">
-            </div>
-
-        </div>
-
-        <br>
-
-        75%
-
-    </td>
-
-    <td>
-
-        <button onclick="openModal(
-            'FA version update / PCB transfer adjustment',
-            'ETON',
-            'Review',
-            '75%',
-            'God,Pook'
-        )">
-
-            View
-
-        </button>
-
-    </td>
-
-</tr>
-
-<tr>
-
-    <td>4</td>
-
-    <td>
-        WHC machine calibration
-    </td>
-
-    <td>GCE</td>
-
-    <td class="status-complete">
-        Completed
-    </td>
-
-    <td>
-
-        <div class="progress-bar">
-
-            <div class="progress-fill"
-                style="width:100%;">
-            </div>
-
-        </div>
-
-        <br>
-
-        100%
-
-    </td>
-
-    <td>
-
-        <button onclick="openModal(
-            'WHC machine calibration',
-            'GCE',
-            'Completed',
-            '50%',
-            'God,Pook'
-        )">
-
-            View
-
-        </button>
-
-    </td>
-
-</tr>
-
-<tr>
-
-    <td>5</td>
-
-    <td>
-        Vega card DQA-780 broken
-    </td>
-
-    <td>CHIN POON</td>
-
-    <td class="status-complete">
-        Completed
-    </td>
-
-    <td>
-
-        <div class="progress-bar">
-
-            <div class="progress-fill"
-                style="width:100%;">
-            </div>
-
-        </div>
-
-        <br>
-
-        100%
-
-    </td>
-
-    <td>
-
-        <button onclick="openModal(
-            'Abnormal waveform / Waiting Vega card',
-            'CHIN POON',
-            'Completed',
-            '100%',
-            'Bia,Peter'
-        )">
-
-            View
-
-        </button>
-
-    </td>
-
-</tr>
-
-<tr>
-
-    <td>6</td>
-
-    <td>
-        ACQ Timeout / Waiting MIL card
-    </td>
-
-    <td>SYKC</td>
-
-    <td class="status-progress">
-        Planning
-    </td>
-
-    <td>
-
-        <div class="progress-bar">
-
-            <div class="progress-fill"
-                style="width:25%;">
-            </div>
-
-        </div>
-
-        <br>
-
-        25%
-
-    </td>
-
-    <td>
-
-        <button onclick="openModal(
-            'ACQ-780 Timeout / Waiting MIL card',
-            'SYKC',
-            'Planning',
-            '25%',
-            'Bia'
-        )">
-
-            View
-
-        </button>
-
-    </td>
-
-</tr>
-    </table>
-
-    <div id="popup" class="modal">
-
-        <div class="modal-content">
-
-            <span class="close"
-                onclick="closeModal()">
-
-                &times;
-
-            </span>
-
-            <h2>Task Detail</h2>
-
-            <div class="detail" id="detailText">
-
-            </div>
-
-        </div>
-
+    <div id="locationInfo" class="info">
+      ยังไม่ได้รับตำแหน่ง GPS
     </div>
 
-    <script>
+    <a id="mapLink" class="map-link" href="#" target="_blank" rel="noopener">
+      เปิดตำแหน่งใน Google Maps
+    </a>
 
-        function openModal(task, factory, status, progress, owner) {
+    <div class="step">ขั้นตอนที่ 2: ถ่ายรูปยืนยันตัวตน</div>
 
-            document.getElementById("popup")
-                .style.display = "block";
+    <button id="cameraButton" class="gray" disabled>
+      เปิดกล้อง
+    </button>
 
-            document.getElementById("detailText")
-                .innerHTML =
+    <video id="video" autoplay playsinline muted></video>
 
-                "<b>Task:</b> " + task + "<br><br>" +
+    <button id="captureButton" class="blue" disabled>
+      ถ่ายรูป
+    </button>
 
-                "<b>Factory:</b> " + factory + "<br><br>" +
+    <img id="photo" alt="รูปยืนยันการลงเวลา">
 
-                "<b>Status:</b> " + status + "<br><br>" +
+    <div class="step">ขั้นตอนที่ 3: บันทึกเวลา</div>
 
-                "<b>Progress:</b> " + progress + "<br><br>" +
+    <button id="submitButton" class="green" disabled>
+      บันทึกเวลา
+    </button>
 
-                "<b>Responsible:</b> " + owner;
+    <div id="status" class="status"></div>
+    <div id="result" class="result"></div>
+  </main>
 
+  <script>
+    let latitude = null;
+    let longitude = null;
+    let accuracy = null;
+    let photoBase64 = null;
+    let stream = null;
+
+    const consent = document.getElementById("consent");
+    const employeeId = document.getElementById("employeeId");
+    const employeeName = document.getElementById("employeeName");
+    const action = document.getElementById("action");
+    const locationButton = document.getElementById("locationButton");
+    const cameraButton = document.getElementById("cameraButton");
+    const captureButton = document.getElementById("captureButton");
+    const submitButton = document.getElementById("submitButton");
+    const locationInfo = document.getElementById("locationInfo");
+    const mapLink = document.getElementById("mapLink");
+    const video = document.getElementById("video");
+    const photo = document.getElementById("photo");
+    const status = document.getElementById("status");
+    const result = document.getElementById("result");
+
+    function showStatus(message, type = "success") {
+      status.textContent = message;
+      status.className = "status " + type;
+    }
+
+    function checkReady() {
+      const ready =
+        consent.checked &&
+        employeeId.value.trim() !== "" &&
+        employeeName.value.trim() !== "" &&
+        latitude !== null &&
+        longitude !== null &&
+        photoBase64 !== null;
+
+      submitButton.disabled = !ready;
+    }
+
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+      }
+
+      video.srcObject = null;
+      video.style.display = "none";
+      captureButton.disabled = true;
+    }
+
+    consent.addEventListener("change", function () {
+      const enabled = consent.checked;
+
+      employeeId.disabled = !enabled;
+      employeeName.disabled = !enabled;
+      action.disabled = !enabled;
+      locationButton.disabled = !enabled;
+
+      if (!enabled) {
+        stopCamera();
+        cameraButton.disabled = true;
+        submitButton.disabled = true;
+        showStatus("กรุณายอมรับเงื่อนไขก่อนเริ่มใช้งาน", "error");
+      } else {
+        status.className = "status";
+      }
+
+      checkReady();
+    });
+
+    employeeId.addEventListener("input", checkReady);
+    employeeName.addEventListener("input", checkReady);
+
+    locationButton.addEventListener("click", function () {
+      if (!navigator.geolocation) {
+        showStatus("อุปกรณ์หรือเบราว์เซอร์นี้ไม่รองรับ GPS", "error");
+        return;
+      }
+
+      locationButton.disabled = true;
+      locationInfo.textContent = "กำลังค้นหาตำแหน่ง GPS...";
+      showStatus("กำลังรับตำแหน่ง กรุณารอสักครู่", "loading");
+
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          latitude = position.coords.latitude;
+          longitude = position.coords.longitude;
+          accuracy = position.coords.accuracy;
+
+          locationInfo.innerHTML =
+            "<strong>ได้รับตำแหน่งแล้ว</strong><br>" +
+            "Latitude: " + latitude.toFixed(6) + "<br>" +
+            "Longitude: " + longitude.toFixed(6) + "<br>" +
+            "ความแม่นยำประมาณ: " + Math.round(accuracy) + " เมตร";
+
+          mapLink.href =
+            "https://www.google.com/maps?q=" + latitude + "," + longitude;
+
+          mapLink.style.display = "inline-block";
+          cameraButton.disabled = false;
+          locationButton.disabled = false;
+
+          showStatus("ได้รับตำแหน่ง GPS เรียบร้อยแล้ว", "success");
+          checkReady();
+        },
+        function (error) {
+          locationButton.disabled = false;
+
+          if (error.code === error.PERMISSION_DENIED) {
+            showStatus("กรุณาอนุญาตให้เว็บไซต์เข้าถึงตำแหน่ง", "error");
+          } else if (error.code === error.POSITION_UNAVAILABLE) {
+            showStatus("ไม่พบตำแหน่ง กรุณาตรวจสอบว่าเปิด GPS แล้ว", "error");
+          } else if (error.code === error.TIMEOUT) {
+            showStatus("รับตำแหน่งใช้เวลานานเกินไป กรุณาลองใหม่", "error");
+          } else {
+            showStatus("ไม่สามารถรับตำแหน่งได้", "error");
+          }
+
+          locationInfo.textContent = "ยังไม่ได้รับตำแหน่ง GPS";
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 20000,
+          maximumAge: 0
         }
+      );
+    });
 
-         function closeModal() {
-    document.getElementById("popup")
-        .style.display = "none";
-}
+    cameraButton.addEventListener("click", async function () {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showStatus("เบราว์เซอร์นี้ไม่รองรับการเปิดกล้อง", "error");
+        return;
+      }
 
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js");
-}
-</script>
+      try {
+        stopCamera();
 
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: "user",
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          },
+          audio: false
+        });
+
+        video.srcObject = stream;
+        video.style.display = "block";
+        captureButton.disabled = false;
+
+        showStatus("เปิดกล้องแล้ว กรุณากดปุ่มถ่ายรูป", "success");
+      } catch (error) {
+        console.error(error);
+        showStatus("ไม่สามารถเปิดกล้องได้ กรุณาอนุญาตการใช้กล้อง", "error");
+      }
+    });
+
+    captureButton.addEventListener("click", function () {
+      if (!video.videoWidth || !video.videoHeight) {
+        showStatus("กล้องยังไม่พร้อม กรุณารอสักครู่", "error");
+        return;
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      const context = canvas.getContext("2d");
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      photoBase64 = canvas.toDataURL("image/jpeg", 0.8);
+      photo.src = photoBase64;
+      photo.style.display = "block";
+
+      stopCamera();
+      showStatus("ถ่ายรูปเรียบร้อยแล้ว", "success");
+      checkReady();
+    });
+
+    submitButton.addEventListener("click", function () {
+      const data = {
+        employeeId: employeeId.value.trim(),
+        employeeName: employeeName.value.trim(),
+        action: action.value,
+        dateTime: new Date().toLocaleString("th-TH"),
+        latitude: latitude,
+        longitude: longitude,
+        accuracy: Math.round(accuracy),
+        photoBase64: photoBase64
+      };
+
+      console.log("ข้อมูลลงเวลา:", data);
+
+      result.style.display = "block";
+      result.innerHTML =
+        "<strong>บันทึกข้อมูลทดสอบสำเร็จ</strong><br>" +
+        "รหัสพนักงาน: " + data.employeeId + "<br>" +
+        "ชื่อ: " + data.employeeName + "<br>" +
+        "ประเภท: " + data.action + "<br>" +
+        "เวลา: " + data.dateTime + "<br>" +
+        "พิกัด: " + latitude.toFixed(6) + ", " + longitude.toFixed(6) + "<br>" +
+        "ความแม่นยำ: " + data.accuracy + " เมตร";
+
+      showStatus("บันทึกเวลาแบบทดสอบเรียบร้อยแล้ว ข้อมูลอยู่ใน Console", "success");
+    });
+
+    window.addEventListener("beforeunload", stopCamera);
+  </script>
 </body>
-
 </html>
