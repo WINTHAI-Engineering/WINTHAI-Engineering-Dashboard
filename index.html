@@ -506,33 +506,7 @@
     formData.append("longitude", data.longitude);
     formData.append("photoUrl", data.photoBase64 || "");
 
-    fetch("    const targetUrl = "https://script.google.com/macros/s/AKfycbwPQ10xZCN5iwsNr311TsUHzqLFi95jVFJhFuYwVzbNdlu5_F_2kd7GXkgIErsmEPQ/exec";
-    
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = targetUrl;
-    form.target = "hidden_iframe";
-
-    for (const [key, value] of formData.entries()) {
-      const input = document.createElement("input");
-      input.type = "hidden";
-      input.name = key;
-      input.value = value;
-      form.appendChild(input);
-    }
-
-    let iframe = document.getElementById("hidden_iframe");
-    if (!iframe) {
-      iframe = document.createElement("iframe");
-      iframe.name = "hidden_iframe";
-      iframe.id = "hidden_iframe";
-      iframe.style.display = "none";
-      document.body.appendChild(iframe);
-    }
-
-    document.body.appendChild(form);
-    form.submit();
-    document.body.removeChild(form);", {
+    fetch("https://script.google.com/macros/s/AKfycby_53hBZAMK9ZHhTTsXCWELPZENU_WqU9yEekG5wyebzVUFN2CcjIfz8cxJbd70xOc/exec", {
       method: "POST",
       body: formData
     });
