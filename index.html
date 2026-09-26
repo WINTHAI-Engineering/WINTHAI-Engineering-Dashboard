@@ -498,22 +498,41 @@
         "พิกัด: " + latitude.toFixed(6) + ", " + longitude.toFixed(6) + "<br>" +
         "ความแม่นยำ: " + data.accuracy + " เมตร";       
 
-    const webAppUrl = "https://script.google.com/macros/s/AKfycbyu2IwJc80o3lKZRNGusHMSpUM6DJDwxlC_7btImZ7inM5TaHhwudv7ar-Y06EKK/exec";
+       const webAppUrl = "https://script.google.com/macros/s/AKfycby2IwJc80o3lKZRNGusHMSpUM6DJDwxlC_7btImZ7inM5TaHhwudv7ar-Y06EKK/exec";
 
-    const params = new URLSearchParams({
-      employeeId: data.employeeId || "",
-      employeeName: data.employeeName || "",
-      action: data.action || "",
-      latitude: data.latitude || "",
-      longitude: data.longitude || "",
-      accuracy: data.accuracy || "",
-      photoBase64: data.photoBase64 || ""
-    });
+    // จัดเตรียมข้อมูลในรูปแบบฟอร์ม
+    const formData = new FormData();
+    formData.append("employeeId", data.employeeId || "");
+    formData.append("employeeName", data.employeeName || "");
+    formData.append("action", data.action || "");
+    formData.append("latitude", data.latitude || "");
+    formData.append("longitude", data.longitude || "");
+    formData.append("accuracy", data.accuracy || "");
+    formData.append("photoBase64", data.photoBase64 || "");
 
-    const targetUrl = webAppUrl + "?" + params.toString();
-
-    const img = new Image();
-    img.src = targetUrl;
+    // ใช้ navigator.sendBeacon เพื่อส่งข้อมูลเบื้องหลังแบบเสถียรที่สุด
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(webAppUrl, formData);
+    } else {
+      // กรณีเบราว์เซอร์รุ่นเก่า ใช้การสร้างฟอร์มซ่อนส่งออกไป
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = webAppUrl;
+      form.target = "_blank";
+      form.style.display = "none";
+      
+      formData.forEach((value, key) => {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
+      });
+      
+      document.body.appendChild(form);
+      form.submit();
+      form.remove();
+    }
 
     showStatus("บันทึกข้อมูลและส่งเข้า Google Sheets เรียบร้อยแล้ว", "success");
 // ปิด submitButton.addEventListener ตรงนี้
