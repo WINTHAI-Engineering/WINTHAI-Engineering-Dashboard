@@ -498,53 +498,24 @@
         "พิกัด: " + latitude.toFixed(6) + ", " + longitude.toFixed(6) + "<br>" +
         "ความแม่นยำ: " + data.accuracy + " เมตร";       
 
-         const webAppUrl = "https://script.google.com/macros/s/AKfycbzYjjXqYIpblbStO1gSQUJvk25UQdqF_tbcya4B69zMIMkxFW-RuDoRbYNUhYXUIWc/exec";
+    const webAppUrl = "https://script.google.com/macros/s/AKfycbyu2IwJc80o3lKZRNGusHMSpUM6DJDwxlC_7btImZ7inM5TaHhwudv7ar-Y06EKK/exec";
 
-// สร้าง iframe ซ่อน เพื่อส่งข้อมูลไปยัง Google Apps Script
-let submitFrame = document.getElementById("attendanceSubmitFrame");
+    const params = new URLSearchParams({
+      employeeId: data.employeeId || "",
+      employeeName: data.employeeName || "",
+      action: data.action || "",
+      latitude: data.latitude || "",
+      longitude: data.longitude || "",
+      accuracy: data.accuracy || "",
+      photoBase64: data.photoBase64 || ""
+    });
 
-if (!submitFrame) {
-  submitFrame = document.createElement("iframe");
-  submitFrame.id = "attendanceSubmitFrame";
-  submitFrame.name = "attendanceSubmitFrame";
-  submitFrame.style.display = "none";
-  document.body.appendChild(submitFrame);
-}
+    const targetUrl = webAppUrl + "?" + params.toString();
 
-// สร้างฟอร์มสำหรับส่งข้อมูลแบบ POST
-const form = document.createElement("form");
-form.method = "POST";
-form.action = webAppUrl;
-form.target = "attendanceSubmitFrame";
-form.style.display = "none";
+    const img = new Image();
+    img.src = targetUrl;
 
-// ข้อมูลที่จะส่งไป Google Sheets
-const sendData = {
-  employeeId: data.employeeId || "",
-  employeeName: data.employeeName || "",
-  action: data.action || "",
-  latitude: data.latitude || "",
-  longitude: data.longitude || "",
-  accuracy: data.accuracy || "",
-  photoBase64: data.photoBase64 || ""
-};
-
-// สร้างช่องข้อมูลซ่อนในฟอร์ม
-Object.keys(sendData).forEach((key) => {
-  const input = document.createElement("input");
-  input.type = "hidden";
-  input.name = key;
-  input.value = sendData[key];
-  form.appendChild(input);
-});
-
-// ส่งข้อมูล แล้วลบฟอร์มออก
-document.body.appendChild(form);
-form.submit();
-form.remove();
-
-showStatus("ส่งข้อมูลไปยัง Google Sheets แล้ว กรุณารอสักครู่", "success");
-
+    showStatus("บันทึกข้อมูลและส่งเข้า Google Sheets เรียบร้อยแล้ว", "success");
 // ปิด submitButton.addEventListener ตรงนี้
 });
 
