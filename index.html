@@ -507,16 +507,23 @@ formData.append("latitude", data.latitude);
 formData.append("longitude", data.longitude);
 formData.append("photoUrl", data.photoBase64 || "");
 
-fetch("https://script.google.com/macros/s/AKfycbynxDiIKuAIm9GxzubmZZ0_2Uu0iOAjMtLq6IsnsmtiU0KMUIfbORDzC5VCbdEPog/exec", {
+fetch("https://script.google.com/macros/s/AKfycby3fosmTx6eIAoQXL14a3JgderOv2Lm0mGHf8TeRfEWmVj8KEBcp7T8l7AnsCWreLA/exec", {
   method: "POST",
   body: formData
+})
+.then(() => {
+  showStatus("ส่งข้อมูลเรียบร้อยแล้ว กรุณาตรวจสอบใน Google Sheets", "success");
+})
+.catch((error) => {
+  console.error("เกิดข้อผิดพลาดในการส่งข้อมูล:", error);
+  showStatus("ส่งข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง", "error");
 });
 
-showStatus("บันทึกเวลาแบบทดสอบเรียบร้อยแล้ว ข้อมูลอยู่ใน Console", "success");
-      showStatus("บันทึกเวลาแบบทดสอบเรียบร้อยแล้ว ข้อมูลอยู่ใน Console", "success");
-    });
+// ปิด submitButton.addEventListener ตรงนี้
+});
 
-    window.addEventListener("beforeunload", stopCamera);
+
+  window.addEventListener("beforeunload", stopCamera);
   </script>
 </body>
 </html>
