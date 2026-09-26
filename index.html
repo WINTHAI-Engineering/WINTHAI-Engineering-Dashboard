@@ -498,23 +498,27 @@
         "พิกัด: " + latitude.toFixed(6) + ", " + longitude.toFixed(6) + "<br>" +
         "ความแม่นยำ: " + data.accuracy + " เมตร";       
 
-    const webAppUrl = "https://script.google.com/macros/s/AKfycbwkjstkowmerNl-bMMvuYNtOMM-5_lbNCk9OVrksrOVgg_2fzCody4QNHOMtD8e-w/exec";
+        const webAppUrl = "https://script.google.com/macros/s/AKfycbw3ahfmutnnAJ7XChXAf2hDNx1PfLUGkVUSWdPBi20eZSzfHPhF_458-ZMJG0T_nRY/exec";
 
-    // จัดเตรียมข้อมูลในรูปแบบฟอร์ม
-    const formData = new URLSearchParams();
-    formData.append("employeeId", data.employeeId || "");
-    formData.append("employeeName", data.employeeName || "");
-    formData.append("action", data.action || "");
-    formData.append("latitude", data.latitude || "");
-    formData.append("longitude", data.longitude || "");
-    formData.append("accuracy", data.accuracy || "");
-    formData.append("photoBase64", data.photoBase64 || "");
+    // จัดเตรียมข้อมูลในรูปแบบ JSON
+    const payload = {
+      employeeId: data.employeeId || "",
+      employeeName: data.employeeName || "",
+      action: data.action || "",
+      latitude: data.latitude || "",
+      longitude: data.longitude || "",
+      accuracy: data.accuracy || "",
+      photoBase64: data.photoBase64 || ""
+    };
 
-    // ส่งข้อมูลแบบเบื้องหลัง (Background Fetch)
+    // ส่งข้อมูลเข้า Google Sheets
     fetch(webAppUrl, {
       method: "POST",
-      body: formData,
-      mode: "no-cors"
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
     })
     .then(() => {
       showStatus("บันทึกข้อมูลและส่งเข้า Google Sheets เรียบร้อยแล้ว", "success");
@@ -522,7 +526,7 @@
     .catch((error) => {
       console.error("Error:", error);
       showStatus("บันทึกข้อมูลสำเร็จ (โหมดออฟไลน์)", "success");
-    });   
+    });
   window.addEventListener("beforeunload", stopCamera);
   </script>
 </body>
