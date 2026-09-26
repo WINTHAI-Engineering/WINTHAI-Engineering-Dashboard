@@ -498,33 +498,52 @@
         "พิกัด: " + latitude.toFixed(6) + ", " + longitude.toFixed(6) + "<br>" +
         "ความแม่นยำ: " + data.accuracy + " เมตร";       
 
-         const formData = new URLSearchParams();
+         const webAppUrl = "https://script.google.com/macros/s/AKfycbzYjjXqYIpblbStO1gSQUJvk25UQdqF_tbcya4B69zMIMkxFW-RuDoRbYNUhYXUIWc/exec";
 
-formData.append("employeeId", data.employeeId);
-formData.append("employeeName", data.employeeName);
-formData.append("action", data.action);
-formData.append("latitude", data.latitude);
-formData.append("longitude", data.longitude);
-formData.append("photoUrl", data.photoBase64 || "");
+// สร้าง iframe ซ่อน เพื่อส่งข้อมูลไปยัง Google Apps Script
+let submitFrame = document.getElementById("attendanceSubmitFrame");
 
-fetch("https://script.google.com/macros/s/AKfycby3fosmTx6eIAoQXL14a3JgderOv2Lm0mGHf8TeRfEWmVj8KEBcp7T8l7AnsCWreLA/exec", {
-  method: "POST",
-  body: formData
-})
-.then(response => response.json())
-.then(result => {
-  console.log("ผลจาก Google Apps Script:", result);
+if (!submitFrame) {
+  submitFrame = document.createElement("iframe");
+  submitFrame.id = "attendanceSubmitFrame";
+  submitFrame.name = "attendanceSubmitFrame";
+  submitFrame.style.display = "none";
+  document.body.appendChild(submitFrame);
+}
 
-  if (result.success) {
-    showStatus("บันทึกข้อมูลเรียบร้อยแล้ว", "success");
-  } else {
-    showStatus("Google Sheets บันทึกไม่สำเร็จ: " + result.error, "error");
-  }
-})
-.catch(error => {
-  console.error("เกิดข้อผิดพลาดในการส่งข้อมูล:", error);
-  showStatus("ส่งข้อมูลไม่สำเร็จ: " + error.message, "error");
+// สร้างฟอร์มสำหรับส่งข้อมูลแบบ POST
+const form = document.createElement("form");
+form.method = "POST";
+form.action = webAppUrl;
+form.target = "attendanceSubmitFrame";
+form.style.display = "none";
+
+// ข้อมูลที่จะส่งไป Google Sheets
+const sendData = {
+  employeeId: data.employeeId || "",
+  employeeName: data.employeeName || "",
+  action: data.action || "",
+  latitude: data.latitude || "",
+  longitude: data.longitude || "",
+  accuracy: data.accuracy || "",
+  photoBase64: data.photoBase64 || ""
+};
+
+// สร้างช่องข้อมูลซ่อนในฟอร์ม
+Object.keys(sendData).forEach((key) => {
+  const input = document.createElement("input");
+  input.type = "hidden";
+  input.name = key;
+  input.value = sendData[key];
+  form.appendChild(input);
 });
+
+// ส่งข้อมูล แล้วลบฟอร์มออก
+document.body.appendChild(form);
+form.submit();
+form.remove();
+
+showStatus("ส่งข้อมูลไปยัง Google Sheets แล้ว กรุณารอสักครู่", "success");
 
 // ปิด submitButton.addEventListener ตรงนี้
 });
