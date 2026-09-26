@@ -511,12 +511,19 @@ fetch("https://script.google.com/macros/s/AKfycby3fosmTx6eIAoQXL14a3JgderOv2Lm0m
   method: "POST",
   body: formData
 })
-.then(() => {
-  showStatus("ส่งข้อมูลเรียบร้อยแล้ว กรุณาตรวจสอบใน Google Sheets", "success");
+.then(response => response.json())
+.then(result => {
+  console.log("ผลจาก Google Apps Script:", result);
+
+  if (result.success) {
+    showStatus("บันทึกข้อมูลเรียบร้อยแล้ว", "success");
+  } else {
+    showStatus("Google Sheets บันทึกไม่สำเร็จ: " + result.error, "error");
+  }
 })
-.catch((error) => {
+.catch(error => {
   console.error("เกิดข้อผิดพลาดในการส่งข้อมูล:", error);
-  showStatus("ส่งข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง", "error");
+  showStatus("ส่งข้อมูลไม่สำเร็จ: " + error.message, "error");
 });
 
 // ปิด submitButton.addEventListener ตรงนี้
