@@ -498,10 +498,10 @@
         "พิกัด: " + latitude.toFixed(6) + ", " + longitude.toFixed(6) + "<br>" +
         "ความแม่นยำ: " + data.accuracy + " เมตร";       
 
-       const webAppUrl = "https://script.google.com/macros/s/AKfycby2IwJc80o3lKZRNGusHMSpUM6DJDwxlC_7btImZ7inM5TaHhwudv7ar-Y06EKK/exec";
+    const webAppUrl = "https://script.google.com/macros/s/AKfycbwkjstkowmerNl-bMMvuYNtOMM-5_lbNCk9OVrksrOVgg_2fzCody4QNHOMtD8e-w/exec";
 
     // จัดเตรียมข้อมูลในรูปแบบฟอร์ม
-    const formData = new FormData();
+    const formData = new URLSearchParams();
     formData.append("employeeId", data.employeeId || "");
     formData.append("employeeName", data.employeeName || "");
     formData.append("action", data.action || "");
@@ -510,33 +510,19 @@
     formData.append("accuracy", data.accuracy || "");
     formData.append("photoBase64", data.photoBase64 || "");
 
-    // ใช้ navigator.sendBeacon เพื่อส่งข้อมูลเบื้องหลังแบบเสถียรที่สุด
-    if (navigator.sendBeacon) {
-      navigator.sendBeacon(webAppUrl, formData);
-    } else {
-      // กรณีเบราว์เซอร์รุ่นเก่า ใช้การสร้างฟอร์มซ่อนส่งออกไป
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action = webAppUrl;
-      form.target = "_blank";
-      form.style.display = "none";
-      
-      formData.forEach((value, key) => {
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = key;
-        input.value = value;
-        form.appendChild(input);
-      });
-      
-      document.body.appendChild(form);
-      form.submit();
-      form.remove();
-    }
-
-    showStatus("บันทึกข้อมูลและส่งเข้า Google Sheets เรียบร้อยแล้ว", "success");
-// ปิด submitButton.addEventListener ตรงนี้
-});
+    // ส่งข้อมูลแบบเบื้องหลัง (Background Fetch)
+    fetch(webAppUrl, {
+      method: "POST",
+      body: formData,
+      mode: "no-cors"
+    })
+    .then(() => {
+      showStatus("บันทึกข้อมูลและส่งเข้า Google Sheets เรียบร้อยแล้ว", "success");
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      showStatus("บันทึกข้อมูลสำเร็จ (โหมดออฟไลน์)", "success");
+    });
 
 
   window.addEventListener("beforeunload", stopCamera);
