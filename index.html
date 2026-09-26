@@ -475,16 +475,16 @@
     });
 
     submitButton.addEventListener("click", function () {
-      const data = {
-        employeeId: employeeId.value.trim(),
-        employeeName: employeeName.value.trim(),
-        action: action.value,
-        dateTime: new Date().toLocaleString("th-TH"),
-        latitude: latitude,
-        longitude: longitude,
-        accuracy: Math.round(accuracy),
-        photoBase64: photoBase64
-      };
+  const data = {
+    employeeId: document.getElementById("employeeId").value,
+    employeeName: document.getElementById("employeeName").value,
+    action: document.getElementById("action").value,
+    latitude: currentLatitude,
+    longitude: currentLongitude,
+    accuracy: Math.round(currentAccuracy),
+    photoBase64: photoDataUrl,
+    dateTime: new Date().toLocaleString()
+  };
 
       console.log("ข้อมูลลงเวลา:", data);
 
