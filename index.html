@@ -17,7 +17,7 @@
       padding: 20px;
       background: linear-gradient(135deg, #eaf2ff, #f7f9fc);
       color: #1d2939;
-      font-family: Arial, "Segoe UI", Tahoma, sans-serif;
+      font-family: Arial, "Segoe UI", "Microsoft JhengHei", "Noto Sans Thai", sans-serif;
     }
 
     .container {
@@ -28,6 +28,39 @@
       background: #fff;
       border-radius: 20px;
       box-shadow: 0 10px 30px rgba(16, 24, 40, .12);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 8px;
+    }
+
+    .language-switch {
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px;
+      background: #f2f4f7;
+      border-radius: 10px;
+    }
+
+    .language-switch button {
+      width: auto;
+      min-width: 72px;
+      min-height: 38px;
+      padding: 7px 12px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #475467;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .language-switch button.active {
+      background: #155eef;
+      color: #fff;
     }
 
     h1 {
@@ -81,7 +114,7 @@
 
     input[type="text"],
     select,
-    button {
+    .main-button {
       width: 100%;
       min-height: 50px;
       border-radius: 11px;
@@ -119,7 +152,7 @@
       color: #475467;
     }
 
-    button {
+    .main-button {
       padding: 12px 16px;
       border: 0;
       font-weight: 700;
@@ -128,17 +161,12 @@
       transition: filter .2s, transform .1s;
     }
 
-    button:hover:not(:disabled) {
+    .main-button:hover:not(:disabled) {
       filter: brightness(.96);
     }
 
-    button:active:not(:disabled) {
+    .main-button:active:not(:disabled) {
       transform: scale(.99);
-    }
-
-    button:disabled {
-      opacity: .5;
-      cursor: not-allowed;
     }
 
     .blue { background: #155eef; }
@@ -236,6 +264,10 @@
       h1 {
         font-size: 22px;
       }
+
+      .language-switch button {
+        min-width: 64px;
+      }
     }
   </style>
 </head>
@@ -243,32 +275,42 @@
 <body>
   <main class="container">
 
-    <h1>ระบบลงเวลาเข้า-ออกงาน</h1>
-    <p class="subtitle">กรอกข้อมูล รับตำแหน่ง และถ่ายรูปก่อนบันทึกเวลา</p>
+    <div class="topbar">
+      <div class="language-switch">
+        <button id="langTH" type="button" onclick="setLanguage('th')">ไทย</button>
+        <button id="langZH" type="button" onclick="setLanguage('zh')">中文</button>
+      </div>
+    </div>
+
+    <h1 id="title">ระบบลงเวลาเข้า-ออกงาน</h1>
+    <p class="subtitle" id="subtitle">
+      กรอกข้อมูล รับตำแหน่ง และถ่ายรูปก่อนบันทึกเวลา
+    </p>
 
     <div class="consent">
       <input type="checkbox" id="consent">
-      <label for="consent">
+      <label for="consent" id="consentText">
         ฉันยินยอมให้ระบบเข้าถึงตำแหน่ง GPS และกล้อง
         เพื่อใช้ยืนยันการลงเวลาทำงาน
       </label>
     </div>
 
-    <label class="field-label" for="employeeId">รหัสพนักงาน</label>
+    <label class="field-label" for="employeeId" id="employeeIdLabel">รหัสพนักงาน</label>
     <input id="employeeId" type="text" placeholder="เช่น EMP001" disabled>
 
-    <label class="field-label" for="employeeName">ชื่อ-นามสกุล</label>
+    <label class="field-label" for="employeeName" id="employeeNameLabel">ชื่อ-นามสกุล</label>
     <input id="employeeName" type="text" placeholder="กรอกชื่อ-นามสกุล" disabled>
 
-    <label class="field-label" for="action">ประเภทการลงเวลา</label>
+    <label class="field-label" for="action" id="actionLabel">ประเภทการลงเวลา</label>
     <select id="action" disabled>
-      <option value="เข้างาน">เข้างาน</option>
-      <option value="ออกงาน">ออกงาน</option>
+      <!-- value ต้องเป็นภาษาไทย เพื่อให้ Backend เดิมทำงานเหมือนเดิม -->
+      <option value="เข้างาน" id="actionIn">เข้างาน</option>
+      <option value="ออกงาน" id="actionOut">ออกงาน</option>
     </select>
 
-    <div class="step">ขั้นตอนที่ 1: ตรวจสอบตำแหน่ง GPS</div>
+    <div class="step" id="stepGPS">ขั้นตอนที่ 1: ตรวจสอบตำแหน่ง GPS</div>
 
-    <button id="locationButton" class="gray" disabled>
+    <button id="locationButton" class="main-button gray" disabled>
       รับตำแหน่ง GPS
     </button>
 
@@ -280,45 +322,46 @@
       เปิดตำแหน่งใน Google Maps
     </a>
 
-    <div class="step">ขั้นตอนที่ 2: ถ่ายรูปยืนยันตัวตน</div>
+    <div class="step" id="stepCamera">ขั้นตอนที่ 2: ถ่ายรูปยืนยันตัวตน</div>
 
-    <button id="cameraButton" class="gray" disabled>
+    <button id="cameraButton" class="main-button gray" disabled>
       เปิดกล้อง
     </button>
 
     <video id="video" autoplay playsinline muted></video>
 
-    <button id="captureButton" class="blue" disabled>
+    <button id="captureButton" class="main-button blue" disabled>
       ถ่ายรูป
     </button>
 
     <img id="photo" alt="รูปยืนยันการลงเวลา">
 
-    <div class="step">ขั้นตอนที่ 3: บันทึกเวลา</div>
+    <div class="step" id="stepSubmit">ขั้นตอนที่ 3: บันทึกเวลา</div>
 
-    <button id="submitButton" class="green" disabled>
+    <button id="submitButton" class="main-button green" disabled>
       บันทึกเวลา
     </button>
 
     <div id="status" class="status"></div>
     <div id="result" class="result"></div>
 
-    <div class="note">
+    <div class="note" id="note">
       หมายเหตุ: กรุณากดอนุญาตการใช้ GPS และกล้องเมื่อเบราว์เซอร์ร้องขอ
     </div>
 
   </main>
 
   <script>
-    // =========================
-    // Google Apps Script Web App
-    // =========================
+    // =====================================================
+    // Google Apps Script Web App URL
+    // ใช้ URL เดิมของระบบคุณ
+    // =====================================================
     const WEB_APP_URL =
-      "https://script.google.com/macros/s/AKfycbw79AcdHI-2t7zbPy4N3Ne1eUWbxXk8KN576CRBudAoEPHLEZMbXCPQwSSghW8Y4uw/exec";
+      "https://script.google.com/macros/s/AKfycbx4ubxhTebX7haATRaqlv0gAePMtPp9cd2VueYmNPBN0xyupYrbk5i1gZQbXrrdsqc/exec";
 
-    // =========================
+    // =====================================================
     // ตัวแปรระบบ
-    // =========================
+    // =====================================================
     let latitude = null;
     let longitude = null;
     let accuracy = null;
@@ -326,9 +369,190 @@
     let stream = null;
     let isSubmitting = false;
 
-    // =========================
+    // =====================================================
+    // ภาษา
+    // =====================================================
+    const translations = {
+      th: {
+        title: "ระบบลงเวลาเข้า-ออกงาน",
+        subtitle: "กรอกข้อมูล รับตำแหน่ง และถ่ายรูปก่อนบันทึกเวลา",
+        consent: "ฉันยินยอมให้ระบบเข้าถึงตำแหน่ง GPS และกล้อง เพื่อใช้ยืนยันการลงเวลาทำงาน",
+        employeeIdLabel: "รหัสพนักงาน",
+        employeeIdPlaceholder: "เช่น EMP001",
+        employeeNameLabel: "ชื่อ-นามสกุล",
+        employeeNamePlaceholder: "กรอกชื่อ-นามสกุล",
+        actionLabel: "ประเภทการลงเวลา",
+        actionIn: "เข้างาน",
+        actionOut: "ออกงาน",
+        stepGPS: "ขั้นตอนที่ 1: ตรวจสอบตำแหน่ง GPS",
+        getGPS: "รับตำแหน่ง GPS",
+        gpsNotReceived: "ยังไม่ได้รับตำแหน่ง GPS",
+        openMap: "เปิดตำแหน่งใน Google Maps",
+        stepCamera: "ขั้นตอนที่ 2: ถ่ายรูปยืนยันตัวตน",
+        openCamera: "เปิดกล้อง",
+        takePhoto: "ถ่ายรูป",
+        stepSubmit: "ขั้นตอนที่ 3: บันทึกเวลา",
+        submit: "บันทึกเวลา",
+        note: "หมายเหตุ: กรุณากดอนุญาตการใช้ GPS และกล้องเมื่อเบราว์เซอร์ร้องขอ",
+
+        consentRequired: "กรุณายอมรับเงื่อนไขก่อนเริ่มใช้งาน",
+        gpsUnsupported: "อุปกรณ์หรือเบราว์เซอร์นี้ไม่รองรับ GPS",
+        gpsSearching: "กำลังค้นหาตำแหน่ง GPS...",
+        gpsLoading: "กำลังรับตำแหน่ง กรุณารอสักครู่",
+        gpsReceived: "ได้รับตำแหน่งแล้ว",
+        accuracy: "ความแม่นยำประมาณ",
+        meters: "เมตร",
+        gpsSuccess: "ได้รับตำแหน่ง GPS เรียบร้อยแล้ว",
+        gpsPermission: "กรุณาอนุญาตให้เว็บไซต์เข้าถึงตำแหน่ง",
+        gpsUnavailable: "ไม่พบตำแหน่ง กรุณาตรวจสอบ GPS",
+        gpsTimeout: "รับตำแหน่งใช้เวลานานเกินไป กรุณาลองใหม่",
+        gpsError: "ไม่สามารถรับตำแหน่งได้",
+
+        cameraUnsupported: "เบราว์เซอร์นี้ไม่รองรับการเปิดกล้อง",
+        cameraOpened: "เปิดกล้องแล้ว กรุณากดปุ่มถ่ายรูป",
+        cameraPermission: "ไม่สามารถเปิดกล้องได้ กรุณาอนุญาตการใช้กล้อง",
+        cameraNotReady: "กล้องยังไม่พร้อม กรุณารอสักครู่",
+        photoSuccess: "ถ่ายรูปเรียบร้อยแล้ว",
+
+        missingEmployee: "กรุณากรอกรหัสพนักงานและชื่อ-นามสกุล",
+        missingGPS: "กรุณารับตำแหน่ง GPS ก่อน",
+        missingPhoto: "กรุณาถ่ายรูปก่อนบันทึกเวลา",
+        saving: "กำลังบันทึกข้อมูล กรุณารอสักครู่...",
+        sent: "ส่งข้อมูลไปยัง Google Sheets แล้ว",
+        resultTitle: "ข้อมูลลงเวลาที่ส่ง",
+        resultEmployeeId: "รหัสพนักงาน",
+        resultName: "ชื่อ",
+        resultAction: "ประเภท",
+        resultTime: "เวลา",
+        resultCoordinates: "พิกัด",
+        resultAccuracy: "ความแม่นยำ",
+        sendError: "ไม่สามารถส่งข้อมูลได้ กรุณาตรวจสอบ Web App URL และการ Deploy",
+        receivedLocation: "ได้รับตำแหน่งแล้ว"
+      },
+
+      zh: {
+        title: "上下班打卡系统",
+        subtitle: "填写资料、取得 GPS 位置并拍照后即可打卡",
+        consent: "我同意系统使用 GPS 位置和相机，以确认员工打卡",
+        employeeIdLabel: "员工编号",
+        employeeIdPlaceholder: "例如 EMP001",
+        employeeNameLabel: "姓名",
+        employeeNamePlaceholder: "请输入姓名",
+        actionLabel: "打卡类型",
+        actionIn: "上班",
+        actionOut: "下班",
+        stepGPS: "步骤 1：确认 GPS 位置",
+        getGPS: "取得 GPS 位置",
+        gpsNotReceived: "尚未取得 GPS 位置",
+        openMap: "在 Google 地图中查看位置",
+        stepCamera: "步骤 2：拍照确认身份",
+        openCamera: "打开相机",
+        takePhoto: "拍照",
+        stepSubmit: "步骤 3：提交打卡",
+        submit: "提交打卡",
+        note: "注意：浏览器要求时，请允许使用 GPS 位置和相机",
+
+        consentRequired: "请先同意使用条款",
+        gpsUnsupported: "此设备或浏览器不支持 GPS",
+        gpsSearching: "正在寻找 GPS 位置……",
+        gpsLoading: "正在取得位置，请稍候",
+        gpsReceived: "已取得位置",
+        accuracy: "预计精度",
+        meters: "米",
+        gpsSuccess: "GPS 位置取得成功",
+        gpsPermission: "请允许网站访问您的位置",
+        gpsUnavailable: "无法取得位置，请检查 GPS",
+        gpsTimeout: "取得位置超时，请重新尝试",
+        gpsError: "无法取得位置",
+
+        cameraUnsupported: "此浏览器不支持开启相机",
+        cameraOpened: "相机已开启，请按拍照按钮",
+        cameraPermission: "无法开启相机，请允许使用相机",
+        cameraNotReady: "相机尚未准备好，请稍候",
+        photoSuccess: "拍照完成",
+
+        missingEmployee: "请输入员工编号和姓名",
+        missingGPS: "请先取得 GPS 位置",
+        missingPhoto: "请先拍照后再提交打卡",
+        saving: "正在保存资料，请稍候……",
+        sent: "资料已发送到 Google Sheets",
+        resultTitle: "已提交的打卡资料",
+        resultEmployeeId: "员工编号",
+        resultName: "姓名",
+        resultAction: "类型",
+        resultTime: "时间",
+        resultCoordinates: "坐标",
+        resultAccuracy: "精度",
+        sendError: "无法发送资料，请检查 Web App URL 和部署设置",
+        receivedLocation: "位置已取得"
+      }
+    };
+
+    let currentLanguage = localStorage.getItem("attendanceLanguage") || "th";
+
+    function t(key) {
+      return translations[currentLanguage][key] || translations.th[key] || key;
+    }
+
+    function setLanguage(lang) {
+      if (!translations[lang]) return;
+
+      currentLanguage = lang;
+      localStorage.setItem("attendanceLanguage", lang);
+      document.documentElement.lang = lang === "zh" ? "zh-CN" : "th";
+
+      document.getElementById("langTH").classList.toggle("active", lang === "th");
+      document.getElementById("langZH").classList.toggle("active", lang === "zh");
+
+      applyTranslations();
+      updateDynamicTexts();
+    }
+
+    function applyTranslations() {
+      document.getElementById("title").textContent = t("title");
+      document.getElementById("subtitle").textContent = t("subtitle");
+      document.getElementById("consentText").textContent = t("consent");
+
+      document.getElementById("employeeIdLabel").textContent = t("employeeIdLabel");
+      document.getElementById("employeeId").placeholder = t("employeeIdPlaceholder");
+
+      document.getElementById("employeeNameLabel").textContent = t("employeeNameLabel");
+      document.getElementById("employeeName").placeholder = t("employeeNamePlaceholder");
+
+      document.getElementById("actionLabel").textContent = t("actionLabel");
+      document.getElementById("actionIn").textContent = t("actionIn");
+      document.getElementById("actionOut").textContent = t("actionOut");
+
+      document.getElementById("stepGPS").textContent = t("stepGPS");
+      document.getElementById("locationButton").textContent = t("getGPS");
+
+      document.getElementById("stepCamera").textContent = t("stepCamera");
+      document.getElementById("cameraButton").textContent = t("openCamera");
+      document.getElementById("captureButton").textContent = t("takePhoto");
+
+      document.getElementById("stepSubmit").textContent = t("stepSubmit");
+      document.getElementById("submitButton").textContent = t("submit");
+
+      document.getElementById("note").textContent = t("note");
+
+      if (latitude === null || longitude === null) {
+        document.getElementById("locationInfo").textContent = t("gpsNotReceived");
+      }
+
+      const mapLink = document.getElementById("mapLink");
+      if (mapLink.style.display !== "none") {
+        mapLink.textContent = t("openMap");
+      }
+    }
+
+    function updateDynamicTexts() {
+      // ถ้ามีข้อความสถานะอยู่ ให้แสดงใหม่ตามภาษา
+      // ไม่เปลี่ยนข้อความที่เป็นผลลัพธ์จากการส่งแล้วโดยอัตโนมัติ
+    }
+
+    // =====================================================
     // DOM
-    // =========================
+    // =====================================================
     const consent = document.getElementById("consent");
     const employeeId = document.getElementById("employeeId");
     const employeeName = document.getElementById("employeeName");
@@ -348,17 +572,17 @@
     const status = document.getElementById("status");
     const result = document.getElementById("result");
 
-    // =========================
+    // =====================================================
     // แสดงสถานะ
-    // =========================
+    // =====================================================
     function showStatus(message, type) {
       status.textContent = message;
       status.className = "status " + (type || "");
     }
 
-    // =========================
+    // =====================================================
     // เปิด/ปิดช่องกรอกข้อมูล
-    // =========================
+    // =====================================================
     function updateFormState() {
       const enabled = consent.checked;
 
@@ -369,27 +593,22 @@
 
       if (!enabled) {
         stopCamera();
-
         cameraButton.disabled = true;
         captureButton.disabled = true;
         submitButton.disabled = true;
 
-        showStatus("กรุณายอมรับเงื่อนไขก่อนเริ่มใช้งาน", "error");
+        showStatus(t("consentRequired"), "error");
       } else {
         status.className = "status";
         checkReady();
       }
     }
 
-    // สำคัญ:
-    // เรียกทันทีเมื่อเปิดหน้าเว็บ เพื่อป้องกันกรณี Browser
-    // จำสถานะ checkbox เดิม ทำให้ checkbox ติ๊กแล้วแต่ช่องยัง Disabled
     consent.addEventListener("change", updateFormState);
-    updateFormState();
 
-    // =========================
+    // =====================================================
     // ตรวจสอบว่าพร้อมบันทึกหรือยัง
-    // =========================
+    // =====================================================
     function checkReady() {
       const ready =
         consent.checked &&
@@ -406,9 +625,9 @@
     employeeId.addEventListener("input", checkReady);
     employeeName.addEventListener("input", checkReady);
 
-    // =========================
+    // =====================================================
     // หยุดกล้อง
-    // =========================
+    // =====================================================
     function stopCamera() {
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
@@ -420,19 +639,19 @@
       captureButton.disabled = true;
     }
 
-    // =========================
+    // =====================================================
     // GPS
-    // =========================
+    // =====================================================
     locationButton.addEventListener("click", function () {
 
       if (!navigator.geolocation) {
-        showStatus("อุปกรณ์หรือเบราว์เซอร์นี้ไม่รองรับ GPS", "error");
+        showStatus(t("gpsUnsupported"), "error");
         return;
       }
 
       locationButton.disabled = true;
-      locationInfo.textContent = "กำลังค้นหาตำแหน่ง GPS...";
-      showStatus("กำลังรับตำแหน่ง กรุณารอสักครู่", "loading");
+      locationInfo.textContent = t("gpsSearching");
+      showStatus(t("gpsLoading"), "loading");
 
       navigator.geolocation.getCurrentPosition(
         function (position) {
@@ -442,22 +661,23 @@
           accuracy = position.coords.accuracy;
 
           locationInfo.innerHTML =
-            "<strong>ได้รับตำแหน่งแล้ว</strong><br>" +
+            "<strong>" + escapeHtml(t("gpsReceived")) + "</strong><br>" +
             "Latitude: " + latitude.toFixed(6) + "<br>" +
             "Longitude: " + longitude.toFixed(6) + "<br>" +
-            "ความแม่นยำประมาณ: " +
-            Math.round(accuracy) + " เมตร";
+            escapeHtml(t("accuracy")) + ": " +
+            Math.round(accuracy) + " " + escapeHtml(t("meters"));
 
           mapLink.href =
             "https://www.google.com/maps?q=" +
             latitude + "," + longitude;
 
+          mapLink.textContent = t("openMap");
           mapLink.style.display = "inline-block";
 
           cameraButton.disabled = false;
           locationButton.disabled = false;
 
-          showStatus("ได้รับตำแหน่ง GPS เรียบร้อยแล้ว", "success");
+          showStatus(t("gpsSuccess"), "success");
 
           checkReady();
         },
@@ -467,30 +687,18 @@
           locationButton.disabled = false;
 
           if (error.code === error.PERMISSION_DENIED) {
-            showStatus(
-              "กรุณาอนุญาตให้เว็บไซต์เข้าถึงตำแหน่ง",
-              "error"
-            );
+            showStatus(t("gpsPermission"), "error");
           } else if (error.code === error.POSITION_UNAVAILABLE) {
-            showStatus(
-              "ไม่พบตำแหน่ง กรุณาตรวจสอบ GPS",
-              "error"
-            );
+            showStatus(t("gpsUnavailable"), "error");
           } else if (error.code === error.TIMEOUT) {
-            showStatus(
-              "รับตำแหน่งใช้เวลานานเกินไป กรุณาลองใหม่",
-              "error"
-            );
+            showStatus(t("gpsTimeout"), "error");
           } else {
-            showStatus(
-              "ไม่สามารถรับตำแหน่งได้",
-              "error"
-            );
+            showStatus(t("gpsError"), "error");
           }
 
-          locationInfo.textContent =
-            "ยังไม่ได้รับตำแหน่ง GPS";
+          locationInfo.textContent = t("gpsNotReceived");
         },
+
         {
           enableHighAccuracy: true,
           timeout: 20000,
@@ -499,19 +707,16 @@
       );
     });
 
-    // =========================
+    // =====================================================
     // เปิดกล้อง
-    // =========================
+    // =====================================================
     cameraButton.addEventListener("click", async function () {
 
       if (
         !navigator.mediaDevices ||
         !navigator.mediaDevices.getUserMedia
       ) {
-        showStatus(
-          "เบราว์เซอร์นี้ไม่รองรับการเปิดกล้อง",
-          "error"
-        );
+        showStatus(t("cameraUnsupported"), "error");
         return;
       }
 
@@ -533,32 +738,23 @@
 
         captureButton.disabled = false;
 
-        showStatus(
-          "เปิดกล้องแล้ว กรุณากดปุ่มถ่ายรูป",
-          "success"
-        );
+        showStatus(t("cameraOpened"), "success");
 
       } catch (error) {
 
         console.error("Camera error:", error);
 
-        showStatus(
-          "ไม่สามารถเปิดกล้องได้ กรุณาอนุญาตการใช้กล้อง",
-          "error"
-        );
+        showStatus(t("cameraPermission"), "error");
       }
     });
 
-    // =========================
+    // =====================================================
     // ถ่ายรูป
-    // =========================
+    // =====================================================
     captureButton.addEventListener("click", function () {
 
       if (!video.videoWidth || !video.videoHeight) {
-        showStatus(
-          "กล้องยังไม่พร้อม กรุณารอสักครู่",
-          "error"
-        );
+        showStatus(t("cameraNotReady"), "error");
         return;
       }
 
@@ -566,6 +762,7 @@
 
       // ลดขนาดรูป เพื่อไม่ให้ข้อมูลใหญ่เกินไปตอนส่งไป Apps Script
       const maxWidth = 1000;
+
       const scale = Math.min(
         1,
         maxWidth / video.videoWidth
@@ -594,17 +791,14 @@
 
       stopCamera();
 
-      showStatus(
-        "ถ่ายรูปเรียบร้อยแล้ว",
-        "success"
-      );
+      showStatus(t("photoSuccess"), "success");
 
       checkReady();
     });
 
-    // =========================
+    // =====================================================
     // ส่งข้อมูลไป Google Sheets
-    // =========================
+    // =====================================================
     submitButton.addEventListener("click", async function () {
 
       if (isSubmitting) {
@@ -615,10 +809,7 @@
         !employeeId.value.trim() ||
         !employeeName.value.trim()
       ) {
-        showStatus(
-          "กรุณากรอกรหัสพนักงานและชื่อ-นามสกุล",
-          "error"
-        );
+        showStatus(t("missingEmployee"), "error");
         return;
       }
 
@@ -626,35 +817,25 @@
         latitude === null ||
         longitude === null
       ) {
-        showStatus(
-          "กรุณารับตำแหน่ง GPS ก่อน",
-          "error"
-        );
+        showStatus(t("missingGPS"), "error");
         return;
       }
 
       if (!photoBase64) {
-        showStatus(
-          "กรุณาถ่ายรูปก่อนบันทึกเวลา",
-          "error"
-        );
+        showStatus(t("missingPhoto"), "error");
         return;
       }
 
       isSubmitting = true;
       submitButton.disabled = true;
 
-      showStatus(
-        "กำลังบันทึกข้อมูล กรุณารอสักครู่...",
-        "loading"
-      );
+      showStatus(t("saving"), "loading");
 
       /*
         ใช้ URLSearchParams แทน JSON
 
-        เหตุผล:
-        Google Apps Script สามารถรับข้อมูลผ่าน e.parameter
-        ได้โดยตรง และไม่ต้องอ่าน response จาก no-cors
+        Backend เดิมของ Google Apps Script
+        รับข้อมูลผ่าน e.parameter ได้โดยตรง
       */
       const formData = new URLSearchParams();
 
@@ -668,6 +849,8 @@
         employeeName.value.trim()
       );
 
+      // ค่าที่ส่งไป Backend ยังคงเป็น "เข้างาน"/"ออกงาน"
+      // แม้หน้าจอจะแสดงเป็นภาษาจีน
       formData.append(
         "action",
         action.value
@@ -701,40 +884,40 @@
           body: formData
         });
 
-        /*
-          no-cors ไม่สามารถอ่าน response จาก Apps Script ได้
-          ดังนั้นตรงนี้หมายถึง Request ถูกส่งออกไปแล้ว
-        */
-
-        showStatus(
-          "ส่งข้อมูลไปยัง Google Sheets แล้ว",
-          "success"
-        );
+        showStatus(t("sent"), "success");
 
         result.style.display = "block";
 
+        const actionText =
+          action.value === "เข้างาน"
+            ? t("actionIn")
+            : t("actionOut");
+
         result.innerHTML =
-          "<strong>ข้อมูลลงเวลาที่ส่ง</strong><br>" +
-          "รหัสพนักงาน: " +
+          "<strong>" + escapeHtml(t("resultTitle")) + "</strong><br>" +
+          escapeHtml(t("resultEmployeeId")) + ": " +
           escapeHtml(employeeId.value.trim()) +
           "<br>" +
-          "ชื่อ: " +
+          escapeHtml(t("resultName")) + ": " +
           escapeHtml(employeeName.value.trim()) +
           "<br>" +
-          "ประเภท: " +
-          escapeHtml(action.value) +
+          escapeHtml(t("resultAction")) + ": " +
+          escapeHtml(actionText) +
           "<br>" +
-          "เวลา: " +
-          new Date().toLocaleString("th-TH") +
+          escapeHtml(t("resultTime")) + ": " +
+          new Date().toLocaleString(
+            currentLanguage === "zh" ? "zh-CN" : "th-TH"
+          ) +
           "<br>" +
-          "พิกัด: " +
+          escapeHtml(t("resultCoordinates")) + ": " +
           Number(latitude).toFixed(6) +
           ", " +
           Number(longitude).toFixed(6) +
           "<br>" +
-          "ความแม่นยำ: " +
+          escapeHtml(t("resultAccuracy")) + ": " +
           Math.round(accuracy || 0) +
-          " เมตร";
+          " " +
+          escapeHtml(t("meters"));
 
         // ล้างข้อมูลหลังส่ง
         employeeId.value = "";
@@ -750,8 +933,7 @@
 
         mapLink.style.display = "none";
 
-        locationInfo.textContent =
-          "ยังไม่ได้รับตำแหน่ง GPS";
+        locationInfo.textContent = t("gpsNotReceived");
 
         checkReady();
 
@@ -762,10 +944,7 @@
           error
         );
 
-        showStatus(
-          "ไม่สามารถส่งข้อมูลได้ กรุณาตรวจสอบ Web App URL และการ Deploy",
-          "error"
-        );
+        showStatus(t("sendError"), "error");
 
       } finally {
 
@@ -774,9 +953,9 @@
       }
     });
 
-    // =========================
-    // ป้องกัน HTML injection ในผลลัพธ์
-    // =========================
+    // =====================================================
+    // ป้องกัน HTML injection
+    // =====================================================
     function escapeHtml(value) {
       return String(value)
         .replace(/&/g, "&amp;")
@@ -786,13 +965,19 @@
         .replace(/'/g, "&#039;");
     }
 
-    // =========================
+    // =====================================================
     // ปิดกล้องเมื่อออกจากหน้า
-    // =========================
+    // =====================================================
     window.addEventListener(
       "beforeunload",
       stopCamera
     );
+
+    // =====================================================
+    // เริ่มต้นระบบ
+    // =====================================================
+    setLanguage(currentLanguage);
+    updateFormState();
   </script>
 </body>
 </html>
